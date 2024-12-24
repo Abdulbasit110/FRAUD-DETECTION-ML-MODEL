@@ -1,4 +1,3 @@
-Here’s a concise and structured `README.md` file for your fraud detection machine learning project:
 
 ---
 
