@@ -6,7 +6,7 @@
 ## Overview
 This project leverages machine learning to build a fraud detection system that identifies suspicious transactions. It includes data preprocessing, feature engineering, and model evaluation to detect anomalies with high accuracy. The system utilizes advanced classification techniques and performance metrics to ensure robustness and precision.
 
-![system architecture](<system architecture.png>)
+![!\[alt text\](image.png)](<system architecture.png>)
 ---
 
 ## Key Features
