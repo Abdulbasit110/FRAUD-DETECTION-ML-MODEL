@@ -53,15 +53,15 @@ This project leverages machine learning to build a fraud detection system that i
 - **Confusion Matrices**: Visual representation of prediction accuracy (e.g., 'Genuine' vs. 'Suspicious').
 ![alt text](<accuracy report.png>)
 
-![alt text](<Screenshot 2024-12-15 113416.png>)
+![!\[alt text\](<Screenshot 2024-12-15 113416.png>)](confusionmatrix1.png)
 
-![alt text](<Screenshot 2024-12-15 113547.png>)
+![!\[alt text\](<Screenshot 2024-12-15 113547.png>)](confusionmatrix2.png)
 
-![alt text](<Screenshot 2024-12-15 113644.png>)
+![!\[alt text\](<Screenshot 2024-12-15 113644.png>)](confusionmatrix3.png)
 
-![alt text](<Screenshot 2024-12-15 113753.png>)
+![!\[alt text\](<Screenshot 2024-12-15 113753.png>)](accuracygraph.png)
 
-![alt text](<Screenshot 2024-12-15 113832.png>)
+![!\[alt text\](image.png)](loglossgraph.png)
 ---
 
 ## Instructions to Run
