@@ -1,103 +1,118 @@
+# Fraud Detection Pipeline
 
----
-
-# Fraud Detection Using Machine Learning
+A machine learning pipeline for detecting suspicious financial transactions.
 
 ## Overview
-This project leverages machine learning to build a fraud detection system that identifies suspicious transactions. It includes data preprocessing, feature engineering, and model evaluation to detect anomalies with high accuracy. The system utilizes advanced classification techniques and performance metrics to ensure robustness and precision.
 
-![!\[alt text\](image.png)](<system architecture.png>)
----
+This pipeline processes raw transaction data through a series of steps to build a fraud detection model:
 
-## Key Features
-- **Data Processing**: Handles missing data, outliers, and time-series patterns for transaction-level analysis.
-- **Metrics Calculation**: Includes transaction volume, frequency patterns, and sender-beneficiary relationships.
-- **Fraud Detection**: Classifies transactions into 'Genuine' or 'Suspicious' using a combination of machine learning classifiers.
-- **Model Evaluation**: Measures performance with accuracy, precision, recall, and F1-score metrics.
-- **Visualization**: Includes confusion matrices and performance graphs for detailed insights.
+1. **Data loading**: Imports raw transaction data from CSV files
+2. **Data cleaning**: Handles missing values and converts data types
+3. **Feature engineering**: Creates transaction pattern metrics and risk indicators
+4. **Model training**: Trains various classifiers (Random Forest, SVM, etc.)
+5. **Evaluation**: Measures model performance with standard metrics
 
----
+## Features
 
-## Classifiers Used
-- Logistic Regression
-- Support Vector Classifier
-- Random Forest Classifier
-- K-Nearest Neighbors Classifier
-- Decision Tree Classifier
-- Gaussian Naive Bayes
-- Ridge Classifier
-- Voting Classifier (Ensemble)
+- **Transaction Analysis**: Detects unusual transaction patterns and spiking
+- **Email Matching**: Identifies discrepancies between sender names and email domains
+- **Multiple Classifiers**: Random Forest, Logistic Regression, SVM, KNN, and more
+- **Class Imbalance Handling**: Uses SMOTE to address the rarity of fraudulent transactions
+- **Performance Visualization**: Generates confusion matrices and performance graphs
 
----
+## Installation
 
-## Tools and Libraries
-- **Python**: Core programming language
-- **Pandas & NumPy**: Data manipulation
-- **scikit-learn**: Machine learning models and metrics
-- **SMOTE**: For handling class imbalance
-- **Matplotlib & Seaborn**: Visualization
-- **imblearn**: Over-sampling techniques
+```bash
+# Clone the repository
+git clone https://github.com/Abdulbasit110/FRAUD-DETECTION-ML-MODEL.git
+cd fraud-detection-pipeline
 
----
+# Create and activate virtual environment (optional but recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-## Data Insights
-- **Spiking Detection**: Identifies unusual transaction spikes over specific durations.
-- **Email Matching**: Matches sender names with beneficiary email patterns for potential fraud indicators.
-- **Transaction Patterns**: Analyzes top and bottom transaction volumes and frequencies.
+# Install dependencies
+pip install -r requirements.txt
+```
 
----
+## Usage
 
-## Performance
-- **Training and Testing Accuracy**: Ensures high precision with a threshold of 90% (visualized in the attached accuracy report).
-- **Cross-Validation**: Validates model robustness across different splits.
-- **Confusion Matrices**: Visual representation of prediction accuracy (e.g., 'Genuine' vs. 'Suspicious').
-![alt text](<accuracy report.png>)
+### Basic Usage
 
-![!\[alt text\](<Screenshot 2024-12-15 113416.png>)](confusionmatrix1.png)
+```python
+from fraud_detection_pipeline import FraudDetectionPipeline
 
-![!\[alt text\](<Screenshot 2024-12-15 113547.png>)](confusionmatrix2.png)
+# Initialize the pipeline
+pipeline = FraudDetectionPipeline(
+    raw_data_path="path/to/your/data.csv",
+    model_save_path="random_forest_model.pkl"
+)
 
-![!\[alt text\](<Screenshot 2024-12-15 113644.png>)](confusionmatrix3.png)
+# Run the complete pipeline
+results = pipeline.run_pipeline(model_type='random_forest')
 
-![!\[alt text\](<Screenshot 2024-12-15 113753.png>)](accuracygraph.png)
+# Save the trained model
+pipeline.save_model()
 
-![!\[alt text\](image.png)](loglossgraph.png)
----
+# Make predictions on new data
+new_transactions = pd.read_csv("new_transactions.csv")
+predictions, probabilities = pipeline.predict_transaction(new_transactions)
+```
 
-## Instructions to Run
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/abdulbasit110/FRAUD-DETECTION-ML-MODEL.git
-   cd SW Project Final.ipynb
-   ```
+### Advanced Usage
 
-2. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+You can run each step of the pipeline individually:
 
-3. **Prepare the Dataset**
-   Place your dataset in the project folder and update the file path in the code.
+```python
+pipeline = FraudDetectionPipeline()
 
-4. **Run the Model**
-   Execute the script or notebook to preprocess the data, train models, and evaluate performance.
+# Load and prepare data
+pipeline.load_data("path/to/your/data.csv")
+pipeline.clean_data()
+pipeline.engineer_features()
+pipeline.prepare_data_for_training(test_size=0.25, random_state=42)
 
----
+# Train different models and compare
+models = ['random_forest', 'logistic_regression', 'svm', 'voting']
+results = {}
 
-## Visualization
-Performance metrics and classifier comparison are visualized using confusion matrices and accuracy plots. Example plots are attached in the project (e.g., `accuracy_report.png`).
+for model_type in models:
+    pipeline.train_model(model_type)
+    results[model_type] = pipeline.evaluate_model()
+    
+# Save the best model
+best_model = max(results, key=lambda k: results[k]['f1'])
+pipeline.train_model(best_model)
+pipeline.save_model(f"{best_model}_model.pkl")
+```
 
----
+## Model Performance
 
-## Future Enhancements
-- Incorporating deep learning models for enhanced fraud detection.
-- Implementing real-time transaction analysis.
-- Expanding feature engineering for more sophisticated fraud patterns.
+The pipeline includes evaluation metrics for model performance:
+- Accuracy
+- Precision
+- Recall
+- F1 Score
+- Confusion Matrix
 
----
+A confusion matrix visualization is saved as `confusion_matrix.png` after evaluation.
 
-## Contact
-For questions or collaboration opportunities, reach out at:  
-**Email**: abdulbasit4408944@gmail.com  
-**GitHub**: [abdulbasit110](https://github.com/abdulbasit110)
+## Customization
+
+You can customize the pipeline by:
+- Adding new features in the `engineer_features()` method
+- Implementing different models in the `train_model()` method
+- Modifying the evaluation metrics in `evaluate_model()`
+
+## Requirements
+
+- Python 3.8+
+- pandas
+- numpy
+- scikit-learn
+- imbalanced-learn
+- matplotlib
+- seaborn
+- Flask (for API integration)
+- joblib
 
