@@ -2,15 +2,28 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import json
 import numpy as np
+import os
 from datetime import datetime
 from fraud_detection_pipeline import FraudDetectionPipeline
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Load the pre-trained model
+# Initialize pipeline
 pipeline = FraudDetectionPipeline(model_save_path="random_forest_model.pkl")
-pipeline.load_model()
+
+# Try to load the pre-trained model if it exists
+model_loaded = False
+if os.path.exists("random_forest_model.pkl"):
+    try:
+        pipeline.load_model()
+        model_loaded = True
+        print("Pre-trained model loaded successfully")
+    except Exception as e:
+        print(f"Error loading pre-trained model: {e}")
+        print("API will run without model predictions until model is trained")
+else:
+    print("No pre-trained model found. API will run without model predictions until model is trained")
 
 # Helper function to convert numpy values to JSON serializable format
 def convert_to_serializable(obj):
@@ -27,12 +40,23 @@ def convert_to_serializable(obj):
 # API endpoint for health check
 @app.route('/health', methods=['GET'])
 def health_check():
-    return jsonify({'status': 'ok', 'message': 'Fraud detection service is running'})
+    return jsonify({
+        'status': 'ok', 
+        'message': 'Fraud detection service is running',
+        'model_loaded': model_loaded
+    })
 
 # API endpoint for batch predictions
 @app.route('/predict/batch', methods=['POST'])
 def predict_batch():
     try:
+        # Check if model is loaded
+        if not model_loaded:
+            return jsonify({
+                'error': 'Model not loaded',
+                'message': 'Please train the model first using the training script'
+            }), 503
+        
         # Check if file was uploaded
         if 'file' not in request.files:
             return jsonify({'error': 'No file provided'}), 400
@@ -79,6 +103,13 @@ def predict_batch():
 @app.route('/predict/transaction', methods=['POST'])
 def predict_transaction():
     try:
+        # Check if model is loaded
+        if not model_loaded:
+            return jsonify({
+                'error': 'Model not loaded',
+                'message': 'Please train the model first using the training script'
+            }), 503
+        
         # Get JSON data
         transaction_data = request.get_json()
         
@@ -174,6 +205,22 @@ def stream_all_transactions():
         yield ']'  # End of JSON array
     
     return app.response_class(generate(), mimetype='application/json')
+
+# API endpoint to trigger model training
+@app.route('/model/train', methods=['POST'])
+def train_model():
+    try:
+        # This endpoint would trigger the model training process
+        # For a production app, this would be handled by a background job
+        # This is just a placeholder - in practice, you might use a job queue
+        
+        return jsonify({
+            'status': 'training_requested',
+            'message': 'Model training requested. Please run the training script manually.'
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True) 
